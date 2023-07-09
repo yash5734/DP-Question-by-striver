@@ -1,35 +1,33 @@
 class Solution{
     
-int helper(int arr[],int k,vector<vector<int>> &dp,int i)
-    {
-        if(dp[i][k]!=-1)
-            return dp[i][k];
-        if(i==0)
-        {
-            return 0;
-        }
-        int take=0,NotTake;
-        if(arr[i]<=k)
-        {
-            take=helper(arr,k-arr[i],dp,i-1);
-        }
-        notTake=helper(arr,k,dp,i-1);
-       
-        return  dp[i][k]=(take+notTake)% (1000000000+7);
-    }
+
+int f(int ind, int arr[], int target, vector<vector<int>> &dp){
+    
+	if(ind==0){
+	    if(arr[0] == 0 && target ==0) return 2;
+	    if(target==0) return 1;
+	    if(arr[0] == target) return 1;
+	    return 0;
+	} 
+	if(dp[ind][target]!=-1) return dp[ind][target];
+
+	int notTake = f(ind-1,arr,target,dp);
+	int take = 0;
+	if(target>=arr[ind]){
+		take = f(ind-1,arr,target-arr[ind],dp);
+	}
+
+	return dp[ind][target] = (take+notTake)% (1000000000+7);
+}
+
+
 	public:
 	
 	int perfectSum(int arr[], int n, int sum)
 	{
 	    vector<vector<int>> dp(n,vector<int>(sum+1,-1));
-	    if(arr[0]==0)dp[0][0]=2;
-          else dp[0][0]=1;
-          
-        if(arr[0]!=0&&arr[0]<=sum){
-              dp[0][arr[0]]=1;
-          }
-        
-	    return helper(arr,sum,dp,n-1);
+	    
+	    return f(n-1,arr,sum,dp);
 	}
 	  
 };
